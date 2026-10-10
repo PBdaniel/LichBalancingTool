@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Score de Habilidades</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f4f1;--pn:#fff;--tx:#1d2320;--mu:#5d6862;--ln:#d5d9d3;--ac:#2f6f5e;--acb:#e1efe9;--bad:#b3261e;--badb:#fbe4e1;--ok:#1f6b3a;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#151a18;--pn:#1e2522;--tx:#e6eae7;--mu:#9aa6a0;--ln:#34403b;--ac:#6fc2a8;--acb:#233b33;--bad:#ff8a80;--badb:#3d2220;--ok:#7fd49a}}
+:root[data-theme="dark"]{--bg:#151a18;--pn:#1e2522;--tx:#e6eae7;--mu:#9aa6a0;--ln:#34403b;--ac:#6fc2a8;--acb:#233b33;--bad:#ff8a80;--badb:#3d2220;--ok:#7fd49a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 "IBM Plex Sans",system-ui,sans-serif}
+main{max-width:1500px;margin:0 auto;padding:16px}
+h1{font-size:20px;margin:0 0 4px}p.sub{margin:0 0 14px;color:var(--mu)}
+.bar{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:end;background:var(--pn);border:1px solid var(--ln);border-radius:8px;padding:12px;margin-bottom:14px}
+.bar label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--mu)}
+.bar input,.bar select{width:84px}
+input,select,textarea,button{font:inherit;color:var(--tx);background:var(--pn);border:1px solid var(--ln);border-radius:5px;padding:5px 7px}
+textarea{width:100%;min-width:180px;resize:vertical}
+button{cursor:pointer}button:hover{border-color:var(--ac)}
+button.pri{background:var(--ac);border-color:var(--ac);color:#fff}
+:focus-visible{outline:2px solid var(--ac);outline-offset:1px}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:-1px}
+.tabs button{border-radius:6px 6px 0 0;border-bottom-color:var(--ln);background:var(--bg)}
+.tabs button.on{background:var(--pn);border-bottom-color:var(--pn);font-weight:600;color:var(--ac)}
+.tabs .fix{margin-left:auto}
+.panel{background:var(--pn);border:1px solid var(--ln);border-radius:0 8px 8px 8px;padding:12px}
+.ph{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+.ph input{font-weight:600;font-size:16px;width:240px}
+.wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:1200px}
+th{font-size:12px;text-align:left;color:var(--mu);font-weight:500;padding:4px 6px;border-bottom:1px solid var(--ln);white-space:nowrap}
+td{padding:5px 4px;border-bottom:1px solid var(--ln);vertical-align:top}
+td input.n{width:56px;text-align:center}td input[data-k=name]{min-width:170px}td input[data-k=tags]{min-width:140px}
+tr.over{background:var(--badb)}
+.tot{white-space:nowrap;min-width:120px}.tot b{font-size:16px}.tot .ok{color:var(--ok)}.tot .bad{color:var(--bad)}.tot small{display:block;color:var(--bad)}
+.chip{display:inline-block;background:var(--acb);color:var(--ac);border-radius:10px;padding:1px 8px;margin:0 3px 3px 0;font-size:12px}
+.ro td{padding:7px 6px}.ro td.c{text-align:center}.ro td.d{min-width:240px;max-width:380px}
+.empty{padding:22px;text-align:center;color:var(--mu)}
+details{margin-top:12px;color:var(--mu)}details li{margin:2px 0}
+.x{color:var(--bad);border:0;background:none;padding:0 0 0 4px}
+.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}.top h1,.top p{margin:0}
+.sy{display:flex;gap:8px;align-items:center;flex-wrap:wrap}#ver{font-size:12px;color:var(--mu)}
+#msg:not(:empty){margin-bottom:10px}#msg div{padding:8px 12px;border-radius:6px;background:var(--acb);border:1px solid var(--ln)}#msg .er{background:var(--badb);color:var(--bad)}
+#sc{background:var(--pn);border:1px solid var(--ln);border-radius:8px;padding:10px 12px;margin-bottom:14px}#sc summary{cursor:pointer;font-weight:600}
+#sc .g{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin:10px 0}#sc label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--mu)}#sc input{width:100%}
+#sc textarea{font:11px monospace;height:150px;margin-top:8px}#sc ol{margin:8px 0 0 18px;padding:0;color:var(--mu)}
+#dr{position:fixed;top:0;right:0;bottom:0;width:min(380px,100%);background:var(--pn);border-left:1px solid var(--ln);box-shadow:-4px 0 18px #0003;padding:14px;padding-top:calc(14px + env(safe-area-inset-top,0px));overflow:auto;z-index:20}
+#dr[hidden]{display:none}#dr h2{font-size:16px;margin:0 0 10px;display:flex;justify-content:space-between;align-items:center}#dr section{border-top:1px solid var(--ln);padding:10px 0}#dr .b{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+#dr pre{white-space:pre-wrap;font:11px/1.4 monospace;color:var(--mu);margin:6px 0 0;max-height:240px;overflow:auto}
+</style></head><body><main>
+<div class="top"><div><h1>Score de Habilidades</h1><p class="sub" style="margin:0">Scores de 0 a 10; o Resfriamento é multiplicado pelo peso.</p></div>
+<div class="sy"><span id="ver"></span><button class="pri" id="bsync" data-sync>⟳ Sincronizar</button><button data-drawer>☰ Backup</button></div></div>
+<div id="msg"></div>
+<div class="bar" id="cfg"></div>
+<details id="sc"><summary>Config de sincronização (Google Sheets)</summary>
+<div class="g"><label>Link da planilha (acesso geral)<input data-sc="link" placeholder="https://docs.google.com/spreadsheets/d/…"></label>
+<label>URL do Web App (Apps Script)<input data-sc="url" placeholder="https://script.google.com/macros/s/…/exec"></label>
+<label>Chave opcional (igual à do script)<input data-sc="key" type="password"></label></div>
+<div class="sy"><button data-test>Testar conexão</button><button data-cp>Copiar script</button></div>
+<ol><li>O link com acesso geral permite ler a planilha, mas o navegador não consegue gravar nela só com o link. A gravação passa por um Web App do Apps Script, criado uma única vez.</li>
+<li>Na planilha: Extensões › Apps Script. Cole o código abaixo e salve (se quiser, defina uma chave na constante TOKEN).</li>
+<li>Implantar › Nova implantação › App da Web. Executar como "Eu" e acesso "Qualquer pessoa". Copie a URL terminada em /exec.</li>
+<li>Cole o link da planilha e a URL aqui, clique em Testar conexão e depois em Sincronizar.</li></ol>
+<textarea id="gs" readonly></textarea></details>
+<div class="tabs" id="tabs"></div>
+<div class="panel" id="panel"></div>
+</main>
+<aside id="dr" hidden></aside>
+<script>
+const KEY='score_hab_v1',$=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const DEF=()=>({cfg:{ceil:{1:15,2:18,3:20},w:2},
+attrs:[
+{id:'dano',n:'Dano',h:'0: 0% · 2: 120% · 5: 150% · 10: 300% do dano base'},
+{id:'alc',n:'Alcance',h:'0: corpo a corpo · 5: metade do tabuleiro · 10: tabuleiro inteiro'},
+{id:'aoe',n:'Área',h:'0: alvo único · 5: área média · 10: área ampla'},
+{id:'alv',n:'Nº alvos',h:'0: 1 alvo · 5: até 3 alvos · 10: sem limite na área'},
+{id:'cd',n:'Resfriamento',h:'0: 35s · 5: 10s · 10: 4s (menor tempo = maior score)'},
+{id:'uti',n:'Utilidade',h:'0: nenhum · 5: leve/médio (slow, sangramento, escudo, cura) · 10: controle duro/massivo'},
+{id:'dp',n:'Duração +',h:'0: instantâneo · 5: 3 a 5s · 10: longa/contínua (buff e cura)'},
+{id:'dn',n:'Duração −',h:'0: instantâneo · 5: 2 a 4s · 10: longa (debuff e CC)'}],
+chars:[{id:'c1',name:'Personagem 1',u:0,skills:[]}],tab:'c1',ver:0,base:null,dirty:0,mu:0,lastSync:0,lastBackup:null,log:[],sync:{link:'',url:'',key:''}});
+let S;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!S||!S.chars)S=DEF();
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+let REV=0,STORE_OK=true;
+const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){STORE_OK=false}};
+const save=()=>{S.dirty=1;S.mu=Date.now();REV++;persist();updStatus()};
+function mig(){const D=DEF();for(const k in D)if(S[k]===undefined)S[k]=D[k];S.sync=Object.assign({link:'',url:'',key:''},S.sync);
+ S.chars.forEach(c=>{if(typeof c.id==='number')c.id='c'+c.id;c.u=c.u||0;c.skills=c.skills||[];c.skills.forEach(k=>{k.id=k.id||uid();k.u=k.u||0;k.s=k.s||{}})});
+ if(typeof S.tab==='number')S.tab='c'+S.tab;if(S.tab!=='all'&&!S.chars.some(c=>c.id===S.tab))S.tab=S.chars[0].id}
+mig();
+const cur=()=>S.chars.find(c=>c.id===S.tab);
+const total=sk=>S.attrs.reduce((t,a)=>t+(+sk.s[a.id]||0)*(a.id==='cd'?S.cfg.w:1),0);
+const badge=sk=>{const t=total(sk),c=S.cfg.ceil[sk.lvl];return `<b class="${t>c?'bad':'ok'}">${t} / ${c}</b>${t>c?`<small>${t-c} acima do teto</small>`:''}`};
+const tags=t=>t.split(',').map(x=>x.trim()).filter(Boolean).map(x=>`<span class="chip">${esc(x)}</span>`).join('');
+const heads=()=>S.attrs.map(a=>`<th title="${esc(a.h||'Atributo novo')}">${esc(a.n)}${a.id==='cd'?' ×'+S.cfg.w:''}${a.custom?`<button class="x" data-rm="${a.id}" title="Remover atributo">✕</button>`:''}</th>`).join('');
+
+function renderCfg(){
+$('#cfg').innerHTML=[1,2,3].map(n=>`<label>Teto nível ${n}<input type="number" min="1" data-ceil="${n}" value="${S.cfg.ceil[n]}"></label>`).join('')+
+`<label>Peso do Resfriamento<select data-w>${[1,2,3].map(n=>`<option value="${n}"${S.cfg.w==n?' selected':''}>${n}x</option>`).join('')}</select></label>
+<label>Novo atributo<span><input id="na" style="width:150px" placeholder="Nome do atributo"> <button data-addattr>Adicionar</button></span></label>
+<label>Cópia local (JSON)<span><button data-exp>Exportar</button> <button data-imp>Importar</button></span></label>`}
+function renderTabs(){
+$('#tabs').innerHTML=S.chars.map(c=>`<button data-tab="${c.id}" class="${S.tab===c.id?'on':''}">${esc(c.name||'Sem nome')}</button>`).join('')+
+`<button data-addchar title="Novo personagem">+ Personagem</button><button class="fix ${S.tab==='all'?'on':''}" data-tab="all">Todas as habilidades</button>`}
+const rowE=(sk,i)=>`<tr data-i="${i}" class="${total(sk)>S.cfg.ceil[sk.lvl]?'over':''}"><td><input data-k="name" value="${esc(sk.name)}" placeholder="Nome da habilidade"></td>
+<td><select data-k="lvl">${[1,2,3].map(n=>`<option value="${n}"${sk.lvl==n?' selected':''}>Nível ${n}</option>`).join('')}</select></td>
+${S.attrs.map(a=>`<td><input class="n" type="number" min="0" max="10" data-a="${a.id}" value="${sk.s[a.id]??0}"></td>`).join('')}
+<td class="tot">${badge(sk)}</td><td><textarea rows="2" data-k="d" placeholder="Descrição">${esc(sk.d)}</textarea></td>
+<td><input data-k="tags" value="${esc(sk.tags)}" placeholder="tag1, tag2"></td><td><button data-del="${i}" title="Excluir habilidade">✕</button></td></tr>`;
+const legend=()=>`<details><summary>Escalas de referência</summary><ul>${S.attrs.filter(a=>a.h).map(a=>`<li><b>${esc(a.n)}</b>: ${esc(a.h)}</li>`).join('')}</ul></details>`;
+function renderPanel(){
+const p=$('#panel');
+if(S.tab==='all'){
+const rows=S.chars.flatMap(c=>c.skills.map(sk=>({c,sk})));
+p.innerHTML=`<div class="ph"><b>Visão geral (somente leitura)</b><input id="q" style="font-size:14px;font-weight:400;width:220px" placeholder="Filtrar por nome, tag ou texto"></div>`+
+(rows.length?`<div class="wrap"><table class="ro"><thead><tr><th>Habilidade</th><th>Nível</th>${heads()}<th>Total / teto</th><th>Descrição</th><th>Tags</th></tr></thead><tbody>${
+rows.map(({c,sk})=>`<tr><td><b>${esc(c.name)} – ${esc(sk.name||'Sem nome')}</b></td><td class="c">${sk.lvl}</td>${S.attrs.map(a=>`<td class="c">${sk.s[a.id]??0}</td>`).join('')}<td class="tot ${total(sk)>S.cfg.ceil[sk.lvl]?'over':''}">${badge(sk)}</td><td class="d">${esc(sk.d)}</td><td>${tags(sk.tags)}</td></tr>`).join('')}</tbody></table></div>`:`<div class="empty">Nenhuma habilidade criada ainda.</div>`)+legend();
+return}
+const c=cur();
+p.innerHTML=`<div class="ph"><input data-cn value="${esc(c.name)}" aria-label="Nome do personagem"><button class="pri" data-add>+ Habilidade</button><button data-delchar>Excluir personagem</button></div>`+
+(c.skills.length?`<div class="wrap"><table><thead><tr><th>Nome</th><th>Nível</th>${heads()}<th>Total / teto</th><th>Descrição</th><th>Tags</th><th></th></tr></thead><tbody>${c.skills.map(rowE).join('')}</tbody></table></div>`:`<div class="empty">Este personagem ainda não tem habilidades. Use “+ Habilidade”.</div>`)+legend();
+}
+function render(){renderCfg();renderTabs();renderPanel()}
+
+document.addEventListener('input',e=>{
+const t=e.target;
+if(t.dataset.ceil){S.cfg.ceil[t.dataset.ceil]=+t.value||0;save();renderPanel();return}
+if(t.id==='q'){const q=t.value.toLowerCase();document.querySelectorAll('.ro tbody tr').forEach(r=>r.hidden=!r.textContent.toLowerCase().includes(q));return}
+if(t.dataset.cn!==undefined){cur().name=t.value;cur().u=Date.now();save();renderTabs();return}
+const tr=t.closest('tr[data-i]');if(!tr)return;
+const sk=cur().skills[+tr.dataset.i];sk.u=Date.now();
+if(t.dataset.a)sk.s[t.dataset.a]=Math.max(0,Math.min(10,Math.round(+t.value||0)));
+else if(t.dataset.k)sk[t.dataset.k]=t.dataset.k==='lvl'?+t.value:t.value;
+tr.querySelector('.tot').innerHTML=badge(sk);tr.classList.toggle('over',total(sk)>S.cfg.ceil[sk.lvl]);save()});
+document.addEventListener('change',e=>{if(e.target.dataset.w!==undefined){S.cfg.w=+e.target.value;save();render()}});
+let armed=null;
+const twice=(k,b,txt,fn)=>{if(armed===k){armed=null;fn();return}armed=k;const o=b.textContent;b.textContent=txt;setTimeout(()=>{if(armed===k){armed=null;b.textContent=o}},2500)};
+document.addEventListener('click',e=>{
+const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+if(d.tab){S.tab=d.tab;persist();renderTabs();renderPanel()}
+else if(d.addchar!==undefined){const id=uid();S.chars.push({id,name:'Personagem '+(S.chars.length+1),u:Date.now(),skills:[]});S.tab=id;save();renderTabs();renderPanel()}
+else if(d.add!==undefined){cur().skills.push({id:uid(),u:Date.now(),name:'',lvl:1,s:{},d:'',tags:''});save();renderPanel()}
+else if(d.del!==undefined){twice('s'+d.del,b,'Confirmar?',()=>{cur().skills.splice(+d.del,1);save();renderPanel()})}
+else if(d.delchar!==undefined){twice('c',b,'Confirmar exclusão?',()=>{S.chars=S.chars.filter(c=>c.id!==S.tab);if(!S.chars.length)S.chars.push({id:uid(),name:'Personagem 1',u:Date.now(),skills:[]});S.tab=S.chars[0].id;save();render()})}
+else if(d.addattr!==undefined){const n=$('#na').value.trim();if(!n)return;S.attrs.push({id:'x'+Date.now(),n,h:'',custom:1});save();render()}
+else if(d.rm){twice('a'+d.rm,b,'?',()=>{S.attrs=S.attrs.filter(a=>a.id!==d.rm);save();render()})}
+else if(d.exp!==undefined){showIO(JSON.stringify(S),false)}
+else if(d.imp!==undefined){showIO('',true)}
+else if(d.apply!==undefined){try{const v=JSON.parse($('#io').value);if(!v.chars||!v.attrs)throw 0;S=v;mig();save();render();fillSC();updStatus()}catch(_){$('#iomsg').textContent='JSON inválido.'}}});
+function showIO(txt,imp){$('#panel').insertAdjacentHTML('afterbegin',`<div id="iobox" style="margin-bottom:10px"><textarea id="io" rows="4">${esc(txt)}</textarea><div><span id="iomsg" style="color:var(--bad)"></span>${imp?'<button class="pri" data-apply>Aplicar</button> ':'Copie o texto acima para guardar. '}<button onclick="document.getElementById('iobox').remove()">Fechar</button></div></div>`)}
+/* ===== SINCRONIZAÇÃO ===== */
+const GS=`const TOKEN=''; // opcional: use a mesma chave digitada na ferramenta
+function doGet(){return out({ok:true,msg:'Use POST'})}
+function doPost(e){var b;try{b=JSON.parse(e.postData.contents)}catch(_){return out({ok:false,error:'JSON inválido'})}
+  try{return out(run(b))}catch(err){return out({ok:false,error:String(err)})}}
+function out(o){return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON)}
+function tab(n){var s=SpreadsheetApp.getActive();return s.getSheetByName(n)||s.insertSheet(n)}
+function dump(n){var s=tab(n);return s.getLastRow()?s.getDataRange().getValues():[]}
+function put(n,rows){var s=tab(n);s.clear();if(!rows||!rows.length)return;
+  var w=Math.max.apply(null,rows.map(function(r){return r.length}));var g=s.getRange(1,1,rows.length,w);
+  g.setNumberFormat('@');g.setValues(rows.map(function(x){return x.concat(Array(w-x.length).fill(''))}))}
+function run(b){var ss=SpreadsheetApp.getActive();
+  if(TOKEN&&b.token!==TOKEN)return{ok:false,error:'Chave inválida'};
+  if(b.sheetId&&b.sheetId!==ss.getId())return{ok:false,error:'O link informado não é desta planilha'};
+  if(b.action==='ping')return{ok:true,name:ss.getName()};
+  var lock=LockService.getScriptLock();lock.waitLock(25000);
+  try{
+    if(b.action==='write'){put('Dados_anterior',dump('Dados'));put('Dados',b.dados);put('Meta',b.meta);SpreadsheetApp.flush();return{ok:true}}
+    if(b.action==='backup'){put('Backup',b.backup);SpreadsheetApp.flush();return{ok:true}}
+    if(b.action==='read')return{ok:true,dados:dump('Dados'),meta:dump('Meta'),backup:dump('Backup')};
+    return{ok:false,error:'Ação desconhecida'};
+  }finally{lock.releaseLock()}}`;
+const sleep=ms=>new Promise(r=>setTimeout(r,ms)),fmt=t=>t?new Date(t).toLocaleString('pt-BR'):'—';
+const clampN=(v,lo,hi)=>Math.max(lo,Math.min(hi,Math.round(+v||0)));
+const hs=o=>JSON.stringify(o,(k,v)=>k==='u'?undefined:v);
+const fit=(s,A)=>{const o={};A.map(a=>a.id).sort().forEach(i=>o[i]=clampN(s&&s[i],0,10));return o};
+let busy=0,force=0;const SK=KEY+'_snaps';
+const setMsg=(t,er)=>{$('#msg').innerHTML=t?`<div class="${er?'er':''}">${esc(t)}</div>`:''};
+const addLog=t=>{S.log.unshift(fmt(Date.now())+' · '+t);S.log=S.log.slice(0,40)};
+const errTxt=e=>e.name==='AbortError'?'Tempo esgotado ao falar com o Google.':e instanceof TypeError?'Falha de rede, ou URL do Apps Script incorreta / sem acesso público.':e instanceof SyntaxError?'Resposta inválida: publique o Web App com acesso "Qualquer pessoa".':e.message;
+function updStatus(){$('#ver').textContent=`Versão v${S.ver} · ${S.lastSync?'última sincronização '+fmt(S.lastSync):'nunca sincronizado'}${S.dirty?' · ● alterações não sincronizadas':''}${STORE_OK?'':' · ⚠ armazenamento local indisponível: sincronize antes de fechar'}`;const b=$('#bsync');if(b&&!busy)b.textContent=force?`Confirmar: apagar ${force} itens da planilha`:'⟳ Sincronizar'}
+function fillSC(){document.querySelectorAll('[data-sc]').forEach(i=>i.value=S.sync[i.dataset.sc]||'');$('#gs').value=GS}
+$('#sc').addEventListener('input',e=>{const k=e.target.dataset.sc;if(k){S.sync[k]=e.target.value.trim();persist()}});
+async function call(action,extra={}){const c=S.sync;if(!c.url)throw Error('Informe a URL do Apps Script em "Config de sincronização".');
+ const sid=(c.link.match(/\/d\/([\w-]+)/)||[])[1]||'';
+ for(let i=0;;i++){const ac=new AbortController(),to=setTimeout(()=>ac.abort(),45000);
+  try{const r=await fetch(c.url,{method:'POST',body:JSON.stringify({action,token:c.key,sheetId:sid,...extra}),signal:ac.signal});const j=await r.json();if(!j.ok)throw Error(j.error||'Erro no script');return j}
+  catch(e){if(!(e instanceof TypeError)||i>=2)throw e;await sleep(1500*(i+1))}finally{clearTimeout(to)}}}
+function items(st){const m={};
+ st.chars.forEach(c=>{m['c:'+c.id]={n:c.name,u:c.u||0};c.skills.forEach(k=>{m['s:'+k.id]={cid:c.id,n:k.name,l:clampN(k.lvl,1,3),s:fit(k.s,st.attrs),d:k.d||'',t:k.tags||'',u:k.u||0}})});
+ m['m:attrs']={v:st.attrs.map(a=>({id:a.id,n:a.n,h:a.h||'',x:a.custom?1:0})),u:st.mu||0};
+ m['m:cfg']={v:{ceil:{1:+st.cfg.ceil[1],2:+st.cfg.ceil[2],3:+st.cfg.ceil[3]},w:+st.cfg.w},u:st.mu||0};return m}
+function build(out){const A=out['m:attrs'].v.map(a=>({id:a.id,n:a.n,h:a.h,...(a.x?{custom:1}:{})}));
+ const st={attrs:A,cfg:out['m:cfg'].v,chars:[],mu:Math.max(out['m:attrs'].u,out['m:cfg'].u)},K=Object.keys(out);
+ K.filter(k=>k[0]==='c').forEach(k=>st.chars.push({id:k.slice(2),name:out[k].n,u:out[k].u,skills:[]}));
+ K.filter(k=>k[0]==='s').forEach(k=>{const o=out[k];let c=st.chars.find(c=>c.id===o.cid);if(!c)st.chars.push(c={id:o.cid,name:'Recuperado',u:0,skills:[]});c.skills.push({id:k.slice(2),name:o.n,lvl:o.l,s:fit(o.s,A),d:o.d,tags:o.t,u:o.u})});
+ if(!st.chars.length)st.chars.push({id:uid(),name:'Personagem 1',u:Date.now(),skills:[]});return st}
+function rows(st){const ids=st.attrs.map(a=>a.id),dados=[['id','personagem_id','personagem','nome','nivel',...ids,'descricao','tags','atualizado_em']];
+ st.chars.forEach(c=>c.skills.forEach(k=>dados.push([k.id,c.id,c.name,k.name,k.lvl,...ids.map(i=>k.s[i]||0),k.d,k.tags,k.u||0])));
+ const meta=[['versao',st.ver],['atualizado_em',Date.now()],['personagens',JSON.stringify(st.chars.map(c=>({id:c.id,n:c.name,u:c.u||0})))],['attrs',JSON.stringify(st.attrs.map(a=>({id:a.id,n:a.n,h:a.h||'',x:a.custom?1:0})))],['cfg',JSON.stringify(st.cfg)]];
+ return{dados,meta}}
+function parse(res){const M={};(res.meta||[]).forEach(r=>{if(r[0])M[r[0]]=r[1]});
+ const J=(k,d)=>{try{return JSON.parse(M[k])}catch(_){return d}},at=J('attrs',null),cf=J('cfg',null),pc=J('personagens',[]),lg=[];
+ const A=at&&at.length?at.map(a=>({id:a.id,n:a.n,h:a.h||'',...(a.x?{custom:1}:{})})):S.attrs;
+ const st={attrs:A,cfg:cf&&cf.ceil?cf:S.cfg,chars:[],mu:+M.atualizado_em||0,ver:+M.versao||0};
+ pc.forEach(c=>st.chars.push({id:String(c.id),name:String(c.n||'Sem nome'),u:+c.u||0,skills:[]}));
+ const D=res.dados||[];
+ if(D.length>1){const H=D[0].map(String),ix=n=>H.indexOf(n),ac=A.map(a=>a.id).filter(i=>ix(i)>=0),seen=new Set();
+  D.slice(1).forEach(r=>{const g=n=>{const i=ix(n);return i<0?'':r[i]??''},sc={};let fix=0;const name=String(g('nome')).trim();
+   ac.forEach(i=>{const raw=r[ix(i)],v=clampN(raw,0,10);if(raw!==''&&raw!=null&&String(v)!==String(raw))fix++;sc[i]=v});
+   if(!name&&!String(g('descricao')).trim()&&!Object.values(sc).some(Boolean))return;
+   let id=String(g('id')).trim(),nw=0;if(!id||seen.has(id)){id=uid();nw=1}seen.add(id);
+   const cid=String(g('personagem_id')).trim(),cn=String(g('personagem')).trim();
+   let c=st.chars.find(c=>c.id===cid)||(cn&&st.chars.find(c=>c.name.toLowerCase()===cn.toLowerCase()));
+   if(!c)st.chars.push(c={id:cid||uid(),name:cn||'Sem nome',u:Date.now(),skills:[]});
+   c.skills.push({id,name,lvl:clampN(g('nivel'),1,3),s:sc,d:String(g('descricao')),tags:String(g('tags')),u:nw?Date.now():+g('atualizado_em')||0});
+   if(nw)lg.push('Linha nova na planilha: "'+name+'"');if(fix)lg.push('Valores fora de 0–10 corrigidos em "'+name+'"')})}
+ return{st,lg}}
+function merge(T,Sh,B){const out={},o={nt:0,ns:0,ut:0,us:0,ds:0,cf:0};
+ for(const id of new Set([...Object.keys(T),...Object.keys(Sh)])){const t=T[id],s=Sh[id],b=B?B[id]:undefined;
+  if(t&&s){const ht=hs(t),hh=hs(s);if(ht===hh){out[id]=t;continue}
+   const tc=ht!==b,sc=hh!==b;let w='t';
+   if(b===undefined)w=(s.u||0)>(t.u||0)?'s':'t';else if(sc&&!tc)w='s';else if(sc&&tc)o.cf++;
+   out[id]=w==='t'?t:s;w==='t'?o.us++:o.ut++}
+  else if(t){out[id]=t;o.ns++}
+  else if(b===undefined){out[id]=s;o.nt++}
+  else o.ds++}
+ return{out,o}}
+function fixLocal(){const seen=new Set();let n=0;S.chars.forEach(c=>{if(!c.id||seen.has('c'+c.id)){c.id=uid();n++}seen.add('c'+c.id);
+ c.skills.forEach(k=>{if(!k.id||seen.has(k.id)){k.id=uid();n++}seen.add(k.id);const l=clampN(k.lvl,1,3);if(l!==k.lvl){k.lvl=l;n++}
+  S.attrs.forEach(a=>{const v=clampN(k.s[a.id],0,10);if(k.s[a.id]!==undefined&&v!==k.s[a.id]){k.s[a.id]=v;n++}})})});if(n)persist();return n}
+async function verify(st){const p=parse(await call('read')),a=items(st),b=items(p.st),bad=[];
+ new Set([...Object.keys(a),...Object.keys(b)]).forEach(k=>{if(!a[k]||!b[k]||hs(a[k])!==hs(b[k]))bad.push(k)});if(p.st.ver!==st.ver)bad.push('versao');return bad}
+const snaps=()=>{try{return JSON.parse(localStorage.getItem(SK))||[]}catch(_){return[]}};
+function pushSnap(why){try{const a=snaps();a.unshift({t:Date.now(),why,d:{chars:S.chars,attrs:S.attrs,cfg:S.cfg}});localStorage.setItem(SK,JSON.stringify(a.slice(0,5)))}catch(e){}}
+function useSnap(i){const s=snaps()[i];if(!s)return;pushSnap('antes de voltar a um ponto local');Object.assign(S,{chars:s.d.chars,attrs:s.d.attrs,cfg:s.d.cfg,tab:s.d.chars[0].id,dirty:1});REV++;persist();render();renderDrawer();updStatus()}
+async function sync(){if(busy)return;busy=1;const ok=force,r0=REV,btn=$('#bsync');force=0;btn.disabled=true;
+ try{if(!navigator.onLine)throw Error('Sem conexão com a internet.');
+  setMsg('Validando dados locais…');fixLocal();setMsg('Lendo a planilha…');
+  const res=await call('read'),P=parse(res),lg=P.lg.slice();
+  if(!(res.dados||[]).length&&!(res.meta||[]).length)lg.push('Planilha vazia: preenchida com os dados da ferramenta.');
+  const{out,o}=merge(items(S),items(P.st),S.base),nb=S.base?Object.keys(S.base).length:0;
+  if(o.ds>3&&o.ds>nb/2&&!ok){force=o.ds;throw Error('Sincronização pausada: '+o.ds+' itens seriam removidos da planilha. Clique em "Confirmar" para prosseguir.')}
+  const st=build(out);st.ver=Math.max(S.ver,P.st.ver)+1;
+  if(REV!==r0)throw Error('Houve edição durante a sincronização; tente novamente.');
+  pushSnap('antes da sincronização');setMsg('Gravando na planilha…');await call('write',rows(st));
+  setMsg('Validação final…');let bad=await verify(st);
+  if(bad.length){setMsg('Divergência em '+bad.length+' itens; refazendo a tabela…');await call('write',rows(st));bad=await verify(st);
+   if(bad.length)throw Error('A validação final falhou em '+bad.length+' itens. A ferramenta e a versão não foram alteradas.')}
+  if(REV!==r0)throw Error('Houve edição durante a sincronização; tente novamente.');
+  S.chars=st.chars;S.attrs=st.attrs;S.cfg=st.cfg;if(S.tab!=='all'&&!S.chars.some(c=>c.id===S.tab))S.tab=S.chars[0].id;
+  S.base=Object.fromEntries(Object.entries(items(S)).map(([k,v])=>[k,hs(v)]));S.ver=st.ver;S.lastSync=Date.now();S.dirty=0;
+  const sm=`v${S.ver}: ${o.nt} criado(s) na ferramenta, ${o.ns} na planilha; ${o.ut} atualizado(s) na ferramenta, ${o.us} na planilha; ${o.ds} removido(s) da planilha; ${o.cf} conflito(s) (ferramenta prevaleceu)`;
+  addLog(sm);lg.forEach(addLog);persist();render();setMsg('Sincronizado. '+sm+'.')}
+ catch(e){setMsg(errTxt(e),1);addLog('Erro: '+errTxt(e))}
+ finally{busy=0;btn.disabled=false;updStatus();if(!$('#dr').hidden)renderDrawer()}}
+async function saveBackup(){if(busy)return;busy=1;try{setMsg('Salvando backup…');fixLocal();const t=Date.now(),js=JSON.stringify({v:S.ver,t,chars:S.chars,attrs:S.attrs,cfg:S.cfg}),
+ ch=js.match(/[\s\S]{1,40000}/g)||[];await call('backup',{backup:[['backup_em',t,'versao',S.ver],...ch.map(c=>[c])]});
+ const r=await call('read');if((r.backup||[]).slice(1).map(x=>x[0]).join('')!==js)throw Error('O backup gravado difere do original; tente novamente.');
+ S.lastBackup={t,v:S.ver};persist();addLog('Backup salvo (v'+S.ver+')');setMsg('Backup salvo na aba "Backup".')}
+ catch(e){setMsg(errTxt(e),1);addLog('Erro no backup: '+errTxt(e))}finally{busy=0;renderDrawer()}}
+async function restore(){if(busy)return;busy=1;try{setMsg('Lendo backup…');const r=await call('read'),rb=r.backup||[];
+ if(rb.length<2)throw Error('A aba Backup está vazia. Salve um backup primeiro.');let b;
+ try{b=JSON.parse(rb.slice(1).map(x=>x[0]).join(''))}catch(_){throw Error('Backup corrompido (JSON inválido). Nada foi alterado.')}
+ if(!Array.isArray(b.chars)||!b.chars.length||!b.chars.every(c=>c&&Array.isArray(c.skills))||!Array.isArray(b.attrs)||!b.cfg||!b.cfg.ceil)throw Error('Estrutura do backup inválida. Nada foi alterado.');
+ pushSnap('antes de restaurar backup');Object.assign(S,{chars:b.chars,attrs:b.attrs,cfg:b.cfg,mu:Date.now()});mig();fixLocal();S.tab=S.chars[0].id;S.dirty=1;REV++;persist();render();
+ addLog('Backup restaurado (v'+b.v+' de '+fmt(b.t)+')');setMsg('Versão restaurada. Sincronize para propagar à planilha.')}
+ catch(e){setMsg(errTxt(e),1);addLog('Erro ao restaurar: '+errTxt(e))}finally{busy=0;updStatus();renderDrawer()}}
+async function test(){try{setMsg('Testando conexão…');setMsg('Conexão OK com a planilha "'+(await call('ping')).name+'".')}catch(e){setMsg(errTxt(e),1)}}
+function renderDrawer(){$('#dr').innerHTML=`<h2>Backup <button data-close>✕</button></h2>
+<section><div class="b"><button class="pri" data-bkp>Salvar Backup</button><button data-rst>Restaurar Versão</button></div>
+<p class="sub">Último backup: ${S.lastBackup?fmt(S.lastBackup.t)+' (v'+S.lastBackup.v+')':'nenhum feito por esta ferramenta'}</p>
+<p class="sub">Salvar Backup sobrescreve a aba "Backup" com os dados atuais da ferramenta. Restaurar Versão substitui todos os dados da ferramenta pelo conteúdo dessa aba; um ponto de restauração local é criado antes.</p></section>
+<section><b>Pontos de restauração locais</b>${snaps().map((s,i)=>`<div class="b" style="margin-top:6px"><span class="sub" style="flex:1;margin:0">${fmt(s.t)} · ${esc(s.why)}</span><button data-snap="${i}">Voltar</button></div>`).join('')||'<p class="sub">Nenhum ainda.</p>'}</section>
+<section><b>Histórico</b><pre>${esc(S.log.join('\n'))||'—'}</pre></section>`}
+document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+ if(d.sync!==undefined)sync();else if(d.drawer!==undefined){renderDrawer();$('#dr').hidden=false}else if(d.close!==undefined)$('#dr').hidden=true;
+ else if(d.bkp!==undefined)saveBackup();else if(d.rst!==undefined)twice('rst',b,'Confirmar: substituir dados locais?',restore);
+ else if(d.snap!==undefined)twice('sn'+d.snap,b,'Confirmar?',()=>useSnap(+d.snap));else if(d.test!==undefined)test();
+ else if(d.cp!==undefined){$('#gs').select();try{navigator.clipboard.writeText(GS)}catch(_){}}});
+fillSC();render();updStatus();
+if(!STORE_OK)setMsg('Aviso: o navegador bloqueou o armazenamento local (comum em páginas embutidas). Sincronize com a planilha antes de fechar.',1);
+</script></body></html>
